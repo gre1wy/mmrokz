@@ -1,7 +1,7 @@
 import os
 import sys
 
-# --- FIX TCL/TK PATHS ---
+# FIX TCL/TK PATHS 
 python_home = r"D:\Programmes\Python" 
 
 tcl_dir = os.path.join(python_home, "tcl")
@@ -30,13 +30,12 @@ def clean_text(text: str) -> str:
     Cleans the text:
     1. Converts to lowercase.
     2. Replaces newlines with spaces.
-    3. Removes ANY character that is not in ALPHABET.
+    3. Removes any character that is not in ALPHABET.
     4. Normalizes multiple spaces into one.
     """
     text = text.lower()
     text = text.replace("\n", " ")
     
-    # Escape special regex chars just in case, though a-z is safe
     escaped_alphabet = re.escape(ALPHABET)
     
     # Remove everything NOT in the alphabet
@@ -48,7 +47,7 @@ def clean_text(text: str) -> str:
 
 def bigram_matrix(text, alphabet=ALPHABET):
     """
-    Builds a transition probability matrix (Markov Chain)
+    Builds a transition probability matrix
     from the training text.
     """
     text = clean_text(text)
@@ -81,8 +80,8 @@ def bigram_matrix(text, alphabet=ALPHABET):
 def calculate_adequacy(text, M, char_to_idx, alphabet=ALPHABET):
     """
     Calculates the 'score' of a text.
-    Higher score (closer to 0, e.g., -2.5) = More Adequate.
-    Lower score (e.g., -6.0) = Less Adequate.
+    Higher score (closer to 0 (-2.5)) = More Adequate.
+    Lower score (-6.0) = Less Adequate.
     """
     clean = clean_text(text)
     
@@ -96,7 +95,6 @@ def calculate_adequacy(text, M, char_to_idx, alphabet=ALPHABET):
         char1 = clean[i]
         char2 = clean[i+1]
         
-        # We only check known characters
         if char1 in char_to_idx and char2 in char_to_idx:
             idx1 = char_to_idx[char1]
             idx2 = char_to_idx[char2]
@@ -120,7 +118,7 @@ class TextAdequacyApp:
         self.char_map = None
         self.threshold = -4.5 # Default threshold
         
-        # --- SECTION 1: TRAINING ---
+        # TRAINING 
         self.frame_train = tk.LabelFrame(root, text="1. Model Training", padx=10, pady=10)
         self.frame_train.pack(fill="x", padx=10, pady=5)
         
@@ -130,7 +128,7 @@ class TextAdequacyApp:
         self.lbl_status = tk.Label(self.frame_train, text="Model not trained", fg="red")
         self.lbl_status.pack(side="left", padx=10)
 
-        # --- SECTION 2: TESTING ---
+        # TESTING 
         self.frame_test = tk.LabelFrame(root, text="2. Text Verification", padx=10, pady=10)
         self.frame_test.pack(fill="both", expand=True, padx=10, pady=5)
         
@@ -162,7 +160,7 @@ class TextAdequacyApp:
                 self.lbl_status.config(text=f"Trained on {len(text)} chars", fg="green")
                 
                 #  AUTO-CALCULATE THRESHOLD
-                sample_score = calculate_adequacy(text[:2000], self.model_matrix, self.char_map)
+                sample_score = calculate_adequacy(text, self.model_matrix, self.char_map)
                 self.threshold = sample_score - 1.5 
                 
                 print(f"Training Sample Score: {sample_score:.4f}")
