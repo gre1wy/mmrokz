@@ -159,7 +159,7 @@ class TextAdequacyApp:
 
                 self.lbl_status.config(text=f"Trained on {len(text)} chars", fg="green")
                 
-                #  AUTO-CALCULATE THRESHOLD
+                # THRESHOLD
                 sample_score = calculate_adequacy(text, self.model_matrix, self.char_map)
                 self.threshold = sample_score - 1.5 
                 
